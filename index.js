@@ -1,6 +1,6 @@
 /*!
- * postcss-filter-declarations | MIT (c) Shinnosuke Watanabe
- * https://github.com/shinnn/postcss-filter-declarations
+ * postcss-color-gray | MIT (c) Shinnosuke Watanabe
+ * https://github.com/shinnn/postcss-color-gray
 */
 
 'use strict';
