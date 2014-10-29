@@ -56,7 +56,6 @@ var postcssColorGray = require('postcss-color-gray');
 
 ### postcssColorGray()
 
-*options*: `Object`  
 Return: `Function`
 
 It converts `gray(A)` to `rgb(A,A,A)`, and converts `gray(A,B)` to `rgba(A,A,A,B)`.
