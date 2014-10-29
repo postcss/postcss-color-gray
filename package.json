@@ -2,7 +2,7 @@
   "name": "postcss-color-gray",
   "version": "0.0.0",
   "description": "PostCSS plugin to transform gray() function to today's CSS",
-  "repository": "shinnn/postcss-color-gray",
+  "repository": "postcss/postcss-color-gray",
   "author": {
     "name": "Shinnosuke Watanabe",
     "url": "https://github.com/shinnn"

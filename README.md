@@ -1,10 +1,10 @@
 # postcss-color-gray
 
-[![Build Status](https://travis-ci.org/shinnn/postcss-color-gray.svg?branch=master)](https://travis-ci.org/shinnn/postcss-color-gray)
-[![Build status](https://ci.appveyor.com/api/projects/status/elxtp9r45rr73cbj?svg=true)](https://ci.appveyor.com/project/ShinnosukeWatanabe/postcss-color-gray)
-[![Coverage Status](https://img.shields.io/coveralls/shinnn/postcss-color-gray.svg)](https://coveralls.io/r/shinnn/postcss-color-gray)
-[![Dependency Status](https://david-dm.org/shinnn/postcss-color-gray.svg)](https://david-dm.org/shinnn/postcss-color-gray)
-[![devDependency Status](https://david-dm.org/shinnn/postcss-color-gray/dev-status.svg)](https://david-dm.org/shinnn/postcss-color-gray#info=devDependencies)
+[![Build Status](https://travis-ci.org/postcss/postcss-color-gray.svg?branch=master)](https://travis-ci.org/postcss/postcss-color-gray)
+[![Build status](https://ci.appveyor.com/api/projects/status/190t5i4f23r49345?svg=true)](https://ci.appveyor.com/project/ShinnosukeWatanabe/postcss-color-gray)
+[![Coverage Status](https://img.shields.io/coveralls/postcss/postcss-color-gray.svg)](https://coveralls.io/r/postcss/postcss-color-gray)
+[![Dependency Status](https://david-dm.org/postcss/postcss-color-gray.svg)](https://david-dm.org/postcss/postcss-color-gray)
+[![devDependency Status](https://david-dm.org/postcss/postcss-color-gray/dev-status.svg)](https://david-dm.org/postcss/postcss-color-gray#info=devDependencies)
 
 [PostCSS](https://github.com/postcss/postcss) plugin to transform [gray()](http://dev.w3.org/csswg/css-color/#grays) function to today's CSS
 
