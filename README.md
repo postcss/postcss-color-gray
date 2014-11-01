@@ -71,7 +71,7 @@ postcss()
 //=> 'a {color: rgb(85, 85, 85); background-color: rgba(26, 26, 26, 0.25)}'
 ```
 
-*Note that [gray() may have a keyword argument to specify a color via "luminance"](http://dev.w3.org/csswg/css-color/#issue-658bb235). Current version of this plugin doesn't support this feature.*
+*Note that [gray() may have a keyword argument to specify a color via "luminance"](http://dev.w3.org/csswg/css-color/#issue-658bb235). Current version of postcss-color-gray doesn't support this feature.*
 
 ## License
 
