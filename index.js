@@ -1,6 +1,6 @@
 /*!
  * postcss-color-gray | MIT (c) Shinnosuke Watanabe
- * https://github.com/shinnn/postcss-color-gray
+ * https://github.com/postcss/postcss-color-gray
 */
 
 'use strict';
