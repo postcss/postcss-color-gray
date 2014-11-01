@@ -12,7 +12,7 @@ test('filterDeclarations()', function(t) {
   t.plan(7);
 
   t.equal(
-    useGray().process('a {color: gray(200); background: gray(34%)}').css,
+    useGray().process('a {color: gray(200); background: gray(00000034%)}').css,
     'a {color: rgb(200, 200, 200); background: rgb(87, 87, 87)}',
     'should convert gray(A) to rgb(A,A,A).'
   );

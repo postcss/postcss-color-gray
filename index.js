@@ -21,7 +21,7 @@ function parseGray(value, source) {
     var alpha = args[1];
     if (alpha) {
       alpha = alpha.trim();
-      var match = alpha.match(/^[1-9](\d|\.)+?%$/);
+      var match = alpha.match(/^[0-9](\d|\.)+?%$/);
       if (match && match[0] === alpha) {
         alpha = parseFloat(alpha) * 0.01;
       }
