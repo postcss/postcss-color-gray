@@ -7,13 +7,9 @@
 
 var color = require('color');
 var reduceFunctionCall = require('reduce-function-call');
+var helpers = require('postcss-message-helpers');
 
-function gnuMessage(message, source) {
-  var fileName = source.file || '<css input>';
-  return fileName + ':' + source.start.line + ':' + source.start.column + ' ' + message;
-}
-
-function parseGray(value, source) {
+function parseGray(value) {
   return reduceFunctionCall(value, 'gray', function(argString) {
     var args = argString.split(',');
 
@@ -39,14 +35,16 @@ function parseGray(value, source) {
 
     } catch (e) {
       e.message = e.message.replace(/rgba?\(.*\)/, 'gray(' + args + ')');
-      throw new Error(gnuMessage(e.message, source));
+      throw e;
     }
   });
 }
 
 function transformDecl(decl) {
   if (decl.value && decl.value.indexOf('gray(') !== -1) {
-    decl.value = parseGray(decl.value, decl.source);
+    decl.value = helpers.try(function transformGrayValue() {
+      return parseGray(decl.value);
+    }, decl.source);
   }
 }
 
