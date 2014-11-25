@@ -16,5 +16,8 @@ install:
 build: off
 
 test_script:
-  - ps: node test.js
+  - ps: 'node test.js #PowerShell'
   - cmd: node test.js
+
+cache:
+  - node_modules
