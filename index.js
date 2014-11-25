@@ -6,8 +6,8 @@
 'use strict';
 
 var color = require('color');
-var reduceFunctionCall = require('reduce-function-call');
 var helpers = require('postcss-message-helpers');
+var reduceFunctionCall = require('reduce-function-call');
 
 function parseGray(value) {
   return reduceFunctionCall(value, 'gray', function(argString) {
