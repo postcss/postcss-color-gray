@@ -36,7 +36,7 @@
   ],
   "dependencies": {
     "color": "^0.7.3",
-    "postcss-message-helpers": "^1.1.1",
+    "postcss-message-helpers": "^2.0.0",
     "reduce-function-call": "^1.0.1"
   },
   "devDependencies": {
@@ -44,7 +44,7 @@
     "istanbul": "^0.3.5",
     "istanbul-coveralls": "^1.0.1",
     "jscs": "^1.8.1",
-    "postcss": "^3.0.7",
+    "postcss": "^4.0.2",
     "tap-spec": "^2.1.0",
     "tape": "^3.0.3"
   }
