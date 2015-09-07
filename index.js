@@ -6,50 +6,55 @@
 'use strict';
 
 var color = require('color');
+var postcss = require('postcss');
 var helpers = require('postcss-message-helpers');
 var reduceFunctionCall = require('reduce-function-call');
 
-function parseGray(value) {
-  return reduceFunctionCall(value, 'gray', function(argString) {
-    var args = argString.split(',');
+var pluginName = 'postcss-color-gray';
+var errorContext = {plugin: pluginName};
 
-    var rgb = args[0] + ',' + args[0] + ',' + args[0];
-    var alpha = args[1];
-    if (alpha) {
-      alpha = alpha.trim();
-      var match = alpha.match(/^[0-9](\d|\.)+?%$/);
-      if (match && match[0] === alpha) {
-        alpha = parseFloat(alpha) * 0.01;
-      }
+function parseAlpha(alpha) {
+  if (alpha) {
+    var match = alpha.match(/^\d(\d|\.)+?%$/);
+    if (match && match[0] === alpha) {
+      return parseFloat(alpha) * 0.01;
     }
+  }
+  return alpha;
+}
 
-    var parsedColor;
-
+function parseGray(decl) {
+  return reduceFunctionCall(decl.value, 'gray', function(body) {
+    if (/^,/.test(body) || /,$/.test(body)) {
+      throw decl.error(
+        'Unable to parse color from string "gray(' + body + ')"',
+        errorContext
+      );
+    }
+    var fn = 'rgb';
+    var args = postcss.list.comma(body);
+    var lightness = args[0];
+    var rgb = [lightness, lightness, lightness];
+    var alpha = parseAlpha(args[1]);
+    if (alpha) {
+      fn += 'a';
+      rgb.push(alpha);
+    }
     try {
-      if (alpha === undefined) {
-        parsedColor = color('rgb' + '(' + rgb + ')');
-      } else {
-        parsedColor = color('rgba' + '(' + rgb + ',' + alpha + ')');
-      }
-      return parsedColor.rgbString();
-
-    } catch (e) {
-      e.message = e.message.replace(/rgba?\(.*\)/, 'gray(' + args + ')');
-      throw e;
+      return color(fn + '(' + rgb + ')').rgbString();
+    } catch (err) {
+      var message = err.message.replace(/rgba?\(.*\)/, 'gray(' + args + ')');
+      throw decl.error(message, errorContext);
     }
   });
 }
 
-function transformDecl(decl) {
-  if (decl.value && decl.value.indexOf('gray(') !== -1) {
-    decl.value = helpers.try(function transformGrayValue() {
-      return parseGray(decl.value);
-    }, decl.source);
-  }
-}
-
-module.exports = function pluginColorGray() {
-  return function(style) {
-    style.eachDecl(transformDecl);
+module.exports = postcss.plugin(pluginName, function() {
+  return function(root) {
+    root.walkDecls(function(decl) {
+      if (decl.value && decl.value.indexOf('gray(') !== -1) {
+        decl.value = helpers.try(parseGray.bind(this, decl), decl.source);
+      }
+    });
   };
-};
+});
