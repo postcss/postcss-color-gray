@@ -1,6 +1,6 @@
 {
   "name": "postcss-color-gray",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "PostCSS plugin to transform gray() function to today's CSS",
   "repository": {
     "type": "git",
@@ -25,8 +25,7 @@
     }
   ],
   "files": [
-    "index.js",
-    "LICENSE"
+    "index.js"
   ],
   "keywords": [
     "css",
@@ -34,7 +33,7 @@
     "style",
     "stylesheet",
     "postcss",
-    "postcss-plugins",
+    "postcss-plugin",
     "color",
     "gray",
     "function"
