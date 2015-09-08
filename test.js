@@ -9,7 +9,7 @@ function useGray() {
 }
 
 test('filterDeclarations()', function(t) {
-  t.plan(7);
+  t.plan(8);
 
   t.equal(
     useGray().process('a {color: gray(200); background: gray(00000034%)}').css,
@@ -31,7 +31,7 @@ test('filterDeclarations()', function(t) {
 
   t.throws(
     function() {
-      useGray().process('a {color: gray()}');
+      return useGray().process('a {color: gray()}').css;
     },
     /Unable to parse color from string "gray\(\)"/,
     'should throw an error when gray() doesn\'t take any arguments.'
@@ -39,15 +39,23 @@ test('filterDeclarations()', function(t) {
 
   t.throws(
     function() {
-      useGray().process('a {color: gray(,foo)}');
+      return useGray().process('a {color: gray(,foo)}').css;
     },
     /<css input>:1:4: Unable to parse color from string "gray\(,foo\)"/,
-    'should throw an error when gray() takes invalid argument.'
+    'should throw an error when gray() args start with a comma.'
   );
 
   t.throws(
     function() {
-      useGray().process('a {color: gray(red)}', {from: 'fixture.css'});
+      return useGray().process('a {color: gray(foo,)}').css;
+    },
+    /<css input>:1:4: Unable to parse color from string "gray\(foo,\)"/,
+    'should throw an error when gray() args end with a comma.'
+  );
+
+  t.throws(
+    function() {
+      return useGray().process('a {color: gray(red)}', {from: 'fixture.css'}).css;
     },
     /fixture\.css:1:4: Unable to parse color from string "gray\(red\)"/,
     'should throw a detailed error when a source file is specified.'
@@ -55,7 +63,7 @@ test('filterDeclarations()', function(t) {
 
   t.throws(
     function() {
-      useGray().process('a {color: gray(,)}', {map: true});
+      return useGray().process('a {color: gray(,)}', {map: true}).css;
     },
     /<css input>:1:4: Unable to parse color from string "gray\(,\)"/,
     'should throw a detailed error when source map is enabled but file isn\'t specified.'
