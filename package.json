@@ -39,7 +39,7 @@
     "function"
   ],
   "dependencies": {
-    "color": "^0.7.3",
+    "color": "^0.11.3",
     "postcss": "^5.0.4",
     "postcss-message-helpers": "^2.0.0",
     "reduce-function-call": "^1.0.1"
