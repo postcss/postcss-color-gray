@@ -1,11 +1,8 @@
 {
   "name": "postcss-color-gray",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "PostCSS plugin to transform gray() function to today's CSS",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/postcss/postcss-color-gray.git"
-  },
+  "repository": "https://github.com/postcss/postcss-color-gray.git",
   "author": {
     "name": "Shinnosuke Watanabe",
     "url": "https://github.com/shinnn"
@@ -16,7 +13,8 @@
     "jscs": "jscs index.js test.js",
     "test": "node test.js | tap-spec",
     "coverage": "istanbul cover test.js",
-    "coveralls": "${npm_package_scripts_coverage} && istanbul-coveralls"
+    "coveralls": "${npm_package_scripts_coverage} && istanbul-coveralls",
+    "release": "npmpub"
   },
   "licenses": [
     {
@@ -49,6 +47,7 @@
     "istanbul": "^0.3.5",
     "istanbul-coveralls": "^1.0.1",
     "jscs": "^1.8.1",
+    "npmpub": "^3.1.0",
     "tap-spec": "^2.1.0",
     "tape": "^3.0.3"
   }
