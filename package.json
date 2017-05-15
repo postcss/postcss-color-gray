@@ -1,6 +1,6 @@
 {
   "name": "postcss-color-gray",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "PostCSS plugin to transform gray() function to today's CSS",
   "repository": "https://github.com/postcss/postcss-color-gray.git",
   "author": {

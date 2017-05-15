@@ -1,3 +1,8 @@
+# 4.0.0 - 2017-05-15
+
+ - Added: compatibility with postcss v6.x
+ - Updated dependencies
+
 # 3.0.1 - 2016-11-28
 
 - Bump `color` dependency version
