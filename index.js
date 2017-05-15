@@ -41,10 +41,12 @@ function parseGray(decl) {
       rgb.push(alpha);
     }
     try {
-      return color(fn + '(' + rgb + ')').rgbString();
+      return color(fn + '(' + rgb + ')').rgb().string();
     } catch (err) {
-      var message = err.message.replace(/rgba?\(.*\)/, 'gray(' + args + ')');
-      throw decl.error(message, errorContext);
+      throw decl.error(
+        'Unable to parse color from string "gray(' + args + ')"',
+        errorContext
+      );
     }
   });
 }

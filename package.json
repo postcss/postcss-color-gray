@@ -8,7 +8,7 @@
     "url": "https://github.com/shinnn"
   },
   "scripts": {
-    "pretest": "npm run eslint && npm run jscs",
+    "pretest": "npm run eslint",
     "eslint": "eslint index.js test.js",
     "jscs": "jscs index.js test.js",
     "test": "node test.js | tap-spec",
@@ -37,18 +37,17 @@
     "function"
   ],
   "dependencies": {
-    "color": "^0.11.3",
-    "postcss": "^5.0.4",
+    "color": "^1.0.3",
+    "postcss": "^6.0.1",
     "postcss-message-helpers": "^2.0.0",
-    "reduce-function-call": "^1.0.1"
+    "reduce-function-call": "^1.0.2"
   },
   "devDependencies": {
-    "eslint": "^0.10.2",
-    "istanbul": "^0.3.5",
-    "istanbul-coveralls": "^1.0.1",
-    "jscs": "^1.8.1",
+    "eslint": "^3.19.0",
+    "istanbul": "^0.4.5",
+    "istanbul-coveralls": "^1.0.3",
     "npmpub": "^3.1.0",
-    "tap-spec": "^2.1.0",
-    "tape": "^3.0.3"
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.3"
   }
 }
