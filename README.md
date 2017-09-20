@@ -1,5 +1,6 @@
 # postcss-color-gray
 
+[![CSS Standard Status](https://jonathantneal.github.io/css-db/badge/css-color-grays.svg)](https://jonathantneal.github.io/css-db/#css-color-grays)
 [![Build Status](https://travis-ci.org/postcss/postcss-color-gray.svg?branch=master)](https://travis-ci.org/postcss/postcss-color-gray)
 [![Build status](https://ci.appveyor.com/api/projects/status/190t5i4f23r49345?svg=true)](https://ci.appveyor.com/project/ShinnosukeWatanabe/postcss-color-gray)
 [![Coverage Status](https://img.shields.io/coveralls/postcss/postcss-color-gray.svg)](https://coveralls.io/r/postcss/postcss-color-gray)
