@@ -1,11 +1,7 @@
-sudo: false
-git:
-  depth: 2
+branches:
+  except: /^v\d/
 language: node_js
 node_js:
   - '4'
   - '6'
-notifications:
-  email: false
-after_script:
-  - npm run-script coveralls
+after_script: node_modules/.bin/nyc report --reporter=text-lcov | npx coveralls
