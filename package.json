@@ -9,7 +9,7 @@
 		"test": "nyc --reporter=text --reporter=html node test.js",
 		"release": "npmpub"
 	},
-	"license": "MIT",
+	"license": "ISC",
 	"files": [
 		"index.js"
 	],
