@@ -3,5 +3,11 @@ branches:
 language: node_js
 node_js:
   - '4'
-after_script: node_modules/.bin/nyc report --reporter=text-lcov | npx coveralls
   - node
+script: if [[ `node --version` != v4.* ]];
+  then npm test;
+  else node test.js;
+  fi;
+after_script: if [[ `node --version` != v4.* ]];
+  then node_modules/.bin/nyc report --reporter=text-lcov | npx coveralls;
+  fi;
