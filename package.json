@@ -1,6 +1,6 @@
 {
 	"name": "postcss-color-gray",
-	"version": "4.0.0",
+	"version": "4.1.0",
 	"description": "PostCSS plugin to transform gray() function to today's CSS",
 	"repository": "postcss/postcss-color-gray",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
@@ -35,7 +35,7 @@
 		"@shinnn/eslint-config-node": "^5.0.0",
 		"eslint": "^4.13.1",
 		"npmpub": "^3.1.0",
-		"nyc": "^11.4.0",
+		"nyc": "^11.4.1",
 		"tape": "^4.8.0"
 	},
 	"eslintConfig": {
