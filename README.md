@@ -1,76 +1,97 @@
-# postcss-color-gray
+# PostCSS Gray [<img src="https://postcss.github.io/postcss/logo.svg" alt="PostCSS" width="90" height="90" align="right">][postcss]
 
-[![CSS Standard Status](https://jonathantneal.github.io/css-db/badge/css-color-grays.svg)](https://jonathantneal.github.io/css-db/#css-color-grays)
-[![Build Status](https://travis-ci.org/postcss/postcss-color-gray.svg?branch=master)](https://travis-ci.org/postcss/postcss-color-gray)
-[![Coverage Status](https://img.shields.io/coveralls/postcss/postcss-color-gray.svg)](https://coveralls.io/r/postcss/postcss-color-gray)
+[![NPM Version][npm-img]][npm-url]
+[![CSS Standard Status][css-img]][css-url]
+[![Build Status][cli-img]][cli-url]
+[![Support Chat][git-img]][git-url]
 
-[PostCSS](https://github.com/postcss/postcss) plugin to transform [gray()](http://dev.w3.org/csswg/css-color/#grays) function to today's CSS
+[PostCSS Gray] lets you use the `gray()` color function in CSS, following the
+[CSSWG Specification].
 
-```css
-.foo {
-  color: gray(0);
+```pcss
+body {
+  background-color: gray(100);
+  color: gray(0 / 90%);
 }
 
-.bar {
-  color: gray(255, 50%);
-}
+/* becomes */
 
-.baz {
-  color: gray;
-}
-```
-
-↓
-
-```css
-.foo {
-  color: rgb(0, 0, 0);
-}
-
-.bar {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.baz {
-  color: gray;
+body {
+  background-color: rgb(255,255,255);
+  color: rgba(0,0,0,.9);
 }
 ```
 
-## Installation
+## Usage
 
-[![NPM version](https://badge.fury.io/js/postcss-color-gray.svg)](https://www.npmjs.org/package/postcss-color-gray)
+Add [PostCSS Gray] to your project:
 
-[Use npm](https://www.npmjs.org/doc/cli/npm-install.html).
-
-```
-npm install postcss-color-gray
+```bash
+npm install postcss-color-gray --save-dev
 ```
 
-## API
+Use [PostCSS Gray] to process your CSS:
 
-```javascript
-var postcssColorGray = require('postcss-color-gray');
+```js
+import postcssGray from 'postcss-color-gray';
+
+postcssGray.process(YOUR_CSS /*, processOptions, pluginOptions */);
 ```
 
-### postcssColorGray()
+Or use it as a [PostCSS] plugin:
 
-Return: `Function`
+```js
+import postcss from 'postcss';
+import postcssGray from 'postcss-color-gray';
 
-It converts `gray(A)` to `rgb(A,A,A)`, and converts `gray(A,B)` to `rgba(A,A,A,B)`.
-
-```javascript
-var postcss = require('postcss');
-var colorGray = require('postcss-color-gray');
-
-postcss()
-  .use(colorGray())
-  .process('a {color: gray(85); background-color: gray(10%, .25)}')
-  .css;
-//=> 'a {color: rgb(85, 85, 85); background-color: rgba(26, 26, 26, 0.25)}'
+postcss([
+  postcssGray(/* pluginOptions */)
+]).process(YOUR_CSS /*, processOptions */);
 ```
 
-*Note that [gray() may have a keyword argument to specify a color via "luminance"](http://dev.w3.org/csswg/css-color/#issue-658bb235). Current version of postcss-color-gray doesn't support this feature.*
+[PostCSS Gray] runs in all Node environments, with special instructions for:
 
-## License
+| [Node](INSTALL.md#node) | [Webpack](INSTALL.md#webpack) | [Create React App](INSTALL.md#create-react-app) | [Gulp](INSTALL.md#gulp) | [Grunt](INSTALL.md#grunt) |
+| --- | --- | --- | --- | --- |
 
-[ISC License](./LICENSE) © 2017 Shinnosuke Watanabe
+## Options
+
+### preserve
+
+The `preserve` option determines whether the original `gray()` function should
+be preserved or replaced. By default, the `gray()` function is replaced.
+
+By setting `preserve` to `true`, the original `gray()` function is preserved.
+
+```js
+postcssGray({ preserve: true });
+```
+
+```pcss
+body {
+  background-color: gray(100);
+  color: gray(0 / 90%);
+}
+
+/* becomes */
+
+body {
+  background-color: gray(100);
+  background-color: rgb(255,255,255);
+  color: gray(0 / 90%);
+  color: rgba(0,0,0,.9);
+}
+```
+
+[cli-img]: https://img.shields.io/travis/postcss/postcss-color-gray.svg
+[cli-url]: https://travis-ci.org/postcss/postcss-color-gray
+[css-img]: https://cssdb.org/badge/gray-function.svg
+[css-url]: https://cssdb.org/#gray-function
+[git-img]: https://img.shields.io/badge/support-chat-blue.svg
+[git-url]: https://gitter.im/postcss/postcss
+[npm-img]: https://img.shields.io/npm/v/postcss-color-gray.svg
+[npm-url]: https://www.npmjs.com/package/postcss-color-gray
+
+[PostCSS]: https://github.com/postcss/postcss
+[PostCSS Gray]: https://github.com/postcss/postcss-color-gray
+[CSSWG Specification]: https://drafts.csswg.org/css-color/#grays
