@@ -1,0 +1,13 @@
+.test-gray {
+	color: gray(40);
+	color: gray(40 / 1);
+	color: gray(40 / .5);
+	color: gray(40 / 100%);
+	color: gray(40 / 50%);
+}
+
+.test-invalid-gray {
+	color: gray();
+	color: gray(40, 1);
+	color: gray(40 / 1 / 1);
+}
