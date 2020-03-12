@@ -5,8 +5,9 @@
 [![Build Status][cli-img]][cli-url]
 [![Support Chat][git-img]][git-url]
 
-[PostCSS Gray] lets you use the `gray()` color function in CSS, following the
-[CSSWG Specification].
+[PostCSS Gray] lets you use the `gray()` color function in CSS, following the outdated version of [CSS Color Module Level 4](https://www.w3.org/TR/2019/WD-css-color-4-20191105/) specification (05 November 2019).
+
+**⚠️ `gray()` has been removed from [Color Module Level 4 specification](https://drafts.csswg.org/css-color/#changes-from-20191105).**
 
 ```pcss
 body {
@@ -94,4 +95,3 @@ body {
 
 [PostCSS]: https://github.com/postcss/postcss
 [PostCSS Gray]: https://github.com/postcss/postcss-color-gray
-[CSSWG Specification]: https://drafts.csswg.org/css-color/#grays
