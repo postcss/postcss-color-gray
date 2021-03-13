@@ -1,89 +1,90 @@
-import postcss from 'postcss';
-import parser from 'postcss-values-parser';
-import { lab2rgb } from '@csstools/convert-colors';
+const {parse} = require("postcss-values-parser");
+const {lab2rgb} = require("@csstools/convert-colors");
+const Numeric = require("postcss-values-parser/lib/nodes/Numeric");
+const Punctuation = require("postcss-values-parser/lib/nodes/Punctuation");
 
-export default postcss.plugin('postcss-color-gray', opts => root => {
-	// walk all declarations likely containing a gray() function
-	root.walkDecls(decl => {
-		if (hasGrayFunction(decl)) {
-			const { value: originalValue } = decl;
+/**
+ * @param {{preserve?: boolean}} opts
+ * @returns {import('postcss').Plugin}
+ */
+module.exports = function creator(opts) {
+	const preserve = Boolean(Object(opts).preserve);
 
-			// parse the declaration value
-			const ast = parser(originalValue).parse();
+	return {
+		postcssPlugin: 'postcss-color-gray',
+		// walk all declarations likely containing a gray() function
+		Declaration(decl) {
+			if (hasGrayFunction(decl)) {
+				const { value: originalValue } = decl;
 
-			// walk every node in the value that contains a gray() function
-			ast.walk(node => {
-				const [lightness, alpha] = getFunctionGrayArgs(node);
+				// parse the declaration value
+				const ast = parse(originalValue);
 
-				if (lightness !== undefined) {
-					// rename the gray() function to rgb()
-					node.value = 'rgb';
+				// walk every node in the value that contains a gray() function
+				ast.walkFuncs(node => {
+					const [lightness, alpha] = getFunctionGrayArgs(node);
 
-					// convert the lab gray lightness into rgb
-					const [r, g, b] = lab2rgb(lightness, 0, 0).map(
-						channel => Math.max(Math.min(Math.round(channel * 2.55), 255), 0)
-					);
+					if (lightness !== undefined) {
+						// rename the gray() function to rgb()
+						node.name = 'rgb';
 
-					// preserve the slash nodes within rgb()
-					const openingSlash = node.first;
-					const closingSlash = node.last;
+						// convert the lab gray lightness into rgb
+						const [r, g, b] = lab2rgb(lightness, 0, 0).map(
+							channel => Math.max(Math.min(Math.round(channel * 2.55), 255), 0)
+						);
 
-					node.removeAll()
-					// replace the contents of rgb with `(r,g,b`
-					.append(openingSlash)
-					.append(parser.number({ value: r }))
-					.append(parser.comma({ value: ',' }))
-					.append(parser.number({ value: g }))
-					.append(parser.comma({ value: ',' }))
-					.append(parser.number({ value: b }))
+						node.removeAll()
+							// replace the contents of rgb with `r,g,b`
+							.append(new Numeric({ value: r }))
+							.append(new Punctuation({ value: ',' }))
+							.append(new Numeric({ value: g }))
+							.append(new Punctuation({ value: ',' }))
+							.append(new Numeric({ value: b }))
 
-					// if an alpha channel was defined
-					if (alpha < 1) {
-						// rename the rgb() function to rgba()
-						node.value += 'a';
+						// if an alpha channel was defined
+						if (alpha < 1) {
+							// rename the rgb() function to rgba()
+							node.name += 'a';
 
-						node
-						// append the contents of rgba with `,a`
-						.append(parser.comma({ value: ',' }))
-						.append(parser.number({ value: alpha }));
+							node
+								// append the contents of rgba with `,a`
+								.append(new Punctuation({ value: ',' }))
+								.append(new Numeric({ value: alpha }));
+						}
 					}
+				});
 
-					// append the contents of rgb/rgba with `)`
-					node.append(closingSlash);
-				}
-			});
+				const modifiedValue = ast.toString();
 
-			const modifiedValue = ast.toString();
-
-			// if the modified value has changed from the original value
-			if (originalValue !== modifiedValue) {
-				// if the original gray() color is to be preserved
-				if (Object(opts).preserve) {
-					// insert the declaration value with the fallback before the current declaration
-					decl.cloneBefore({
-						value: modifiedValue
-					});
-				} else {
-					// otherwise, overwrite the declaration value with the fallback
-					decl.value = modifiedValue;
+				// if the modified value has changed from the original value
+				if (originalValue !== modifiedValue) {
+					// if the original gray() color is to be preserved
+					if (preserve) {
+						// insert the declaration value with the fallback before the current declaration
+						decl.cloneBefore({
+							value: modifiedValue
+						});
+					} else {
+						// otherwise, overwrite the declaration value with the fallback
+						decl.value = modifiedValue;
+					}
 				}
 			}
 		}
-	});
-});
+	}
+}
+
+module.exports.postcss = true;
 
 // return whether a string contains a gray() function
 const hasGrayFunctionRegExp = /(^|[^\w-])gray\(/i;
 const hasGrayFunction = decl => hasGrayFunctionRegExp.test(Object(decl).value);
 
 // return whether a node matches a specific type
-const isNumber = node => Object(node).type === 'number';
+const isNumber = node => Object(node).type === 'numeric';
 const isOperator = node => Object(node).type === 'operator';
 const isFunction = node => Object(node).type === 'func';
-const isCalcRegExp = /^calc$/i;
-const isFunctionCalc = node => isFunction(node) && isCalcRegExp.test(node.value);
-const isGrayRegExp = /^gray$/i;
-const isFunctionGrayWithArgs = node => isFunction(node) && isGrayRegExp.test(node.value) && node.nodes && node.nodes.length;
+const isFunctionCalc = node => isFunction(node) && node.name === 'calc';
 const isNumberPercentage = node => isNumber(node) && node.unit === '%';
 const isNumberUnitless = node => isNumber(node) && node.unit === '';
 const isOperatorSlash = node => isOperator(node) && node.value === '/';
@@ -105,13 +106,15 @@ const getFunctionGrayArgs = node => {
 	const validArgs = [];
 
 	// if the node is a gray() function with arguments
-	if (isFunctionGrayWithArgs(node)) {
+	if (node.name === 'gray' && node.nodes && node.nodes.length) {
 		// get all the gray() function arguments between `(` and `)`
-		const nodes = node.nodes.slice(1, -1);
+		const nodes = node.nodes;
 
 		// validate each argument
 		for (const index in nodes) {
-			const arg = typeof functionalGrayArgs[index] === 'function' ? functionalGrayArgs[index](nodes[index]) : undefined;
+			const arg = typeof functionalGrayArgs[index] === 'function'
+				? functionalGrayArgs[index](nodes[index])
+				: undefined;
 
 			// if the argument was validated
 			if (arg !== undefined) {
