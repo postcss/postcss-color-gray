@@ -28,7 +28,7 @@ body {
 Add [PostCSS Gray] to your project:
 
 ```bash
-npm install postcss-color-gray --save-dev
+npm install postcss postcss-color-gray --save-dev
 ```
 
 Use [PostCSS Gray] to process your CSS:
