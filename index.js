@@ -1,7 +1,5 @@
-const {parse} = require("postcss-values-parser");
+const valueParser = require("postcss-value-parser");
 const {lab2rgb} = require("@csstools/convert-colors");
-const Numeric = require("postcss-values-parser/lib/nodes/Numeric");
-const Punctuation = require("postcss-values-parser/lib/nodes/Punctuation");
 
 /**
  * @param {{preserve?: boolean}} opts
@@ -18,38 +16,58 @@ module.exports = function creator(opts) {
 				const { value: originalValue } = decl;
 
 				// parse the declaration value
-				const ast = parse(originalValue);
+				const ast = valueParser(originalValue);
 
 				// walk every node in the value that contains a gray() function
-				ast.walkFuncs(node => {
+				ast.walk(node => {
 					const [lightness, alpha] = getFunctionGrayArgs(node);
 
 					if (lightness !== undefined) {
 						// rename the gray() function to rgb()
-						node.name = 'rgb';
+						node.value = 'rgb';
 
 						// convert the lab gray lightness into rgb
 						const [r, g, b] = lab2rgb(lightness, 0, 0).map(
 							channel => Math.max(Math.min(Math.round(channel * 2.55), 255), 0)
 						);
 
-						node.removeAll()
-							// replace the contents of rgb with `r,g,b`
-							.append(new Numeric({ value: r }))
-							.append(new Punctuation({ value: ',' }))
-							.append(new Numeric({ value: g }))
-							.append(new Punctuation({ value: ',' }))
-							.append(new Numeric({ value: b }))
+						node.nodes = [
+							{
+								type: 'word',
+								value: `${r}`,
+							},
+							{
+								type: 'div',
+								value: ',',
+							},
+							{
+								type: 'word',
+								value: `${g}`,
+							},
+							{
+								type: 'div',
+								value: ',',
+							},
+							{
+								type: 'word',
+								value: `${b}`,
+							},
+						];
 
 						// if an alpha channel was defined
 						if (alpha < 1) {
 							// rename the rgb() function to rgba()
-							node.name += 'a';
+							node.value += 'a';
 
-							node
-								// append the contents of rgba with `,a`
-								.append(new Punctuation({ value: ',' }))
-								.append(new Numeric({ value: alpha }));
+							node.nodes.push({
+								type: 'div',
+								value: ',',
+							})
+
+							node.nodes.push({
+								type: 'word',
+								value: `${alpha}`,
+							});
 						}
 					}
 				});
@@ -81,12 +99,12 @@ const hasGrayFunctionRegExp = /(^|[^\w-])gray\(/i;
 const hasGrayFunction = decl => hasGrayFunctionRegExp.test(Object(decl).value);
 
 // return whether a node matches a specific type
-const isNumber = node => Object(node).type === 'numeric';
-const isOperator = node => Object(node).type === 'operator';
-const isFunction = node => Object(node).type === 'func';
-const isFunctionCalc = node => isFunction(node) && node.name === 'calc';
-const isNumberPercentage = node => isNumber(node) && node.unit === '%';
-const isNumberUnitless = node => isNumber(node) && node.unit === '';
+const isNumber = node => Object(node).type === 'word';
+const isOperator = node => Object(node).type === 'div';
+const isFunction = node => Object(node).type === 'function';
+const isFunctionCalc = node => isFunction(node) && node.value === 'calc';
+const isNumberPercentage = node => isNumber(node) && unit(node).unit === '%';
+const isNumberUnitless = node => isNumber(node) && unit(node).unit === '';
 const isOperatorSlash = node => isOperator(node) && node.value === '/';
 
 // return valid values from a node, otherwise undefined
@@ -97,7 +115,7 @@ const getAlpha = node => isFunctionCalc(node)
 : isNumberUnitless(node)
 	? Number(node.value)
 : isNumberPercentage(node)
-	? Number(node.value) / 100
+	? Number(unit(node).number) / 100
 : undefined;
 
 // return valid arguments from a gray() function
@@ -106,7 +124,7 @@ const getFunctionGrayArgs = node => {
 	const validArgs = [];
 
 	// if the node is a gray() function with arguments
-	if (node.name === 'gray' && node.nodes && node.nodes.length) {
+	if (node.value === 'gray' && node.type === 'function' && node.nodes && node.nodes.length) {
 		// get all the gray() function arguments between `(` and `)`
 		const nodes = node.nodes;
 
@@ -133,5 +151,23 @@ const getFunctionGrayArgs = node => {
 	} else {
 		// otherwise, return an empty array
 		return [];
+	}
+}
+
+function unit(node) {
+	let fallback = {
+		number: node.value,
+		unit: ''
+	};
+
+	try {
+		const u = valueParser.unit(node.value);
+		if (!u) {
+			return fallback;
+		}
+
+		return u;
+	} catch (_) {
+		return fallback;
 	}
 }
